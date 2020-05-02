@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.neural_network import MLPRegressor
-from sklearn import linear_model
+from sklearn import tree
 from sklearn.neighbors import LocalOutlierFactor
 from sklearn.decomposition import PCA
 from sklearn.feature_selection import SelectFromModel
@@ -12,28 +12,6 @@ class preprocess:
 	def __init__(self, n_components=10):
 		self.n_components = n_components
 		self.pca = None
-
-	#def outlierDetection(self, data):
-	    #clf = LocalOutlierFactor(n_neighbors=20, contamination=0.1)
-	    #outlier = clf.fit_predict(data)
-	    #countInlier = 0
-	    #for i in outlier:
-	    #    if i == 1:
-	    #        countInlier = countInlier + 1
-	    #realData = np.ndarray(shape=(countInlier,60))
-	    #count = 0
-	    #for i in range(len(outlier)):
-	    #    if outlier[i] == 1:
-	    #        realData[count] = data[i]
-	    #        count = count + 1
-	    #return realData
-
-	#def featuresSelection(slef, data, dataTarget, optionalEstimator, max_depth_tree, min_sample_leaf_tree):
-	 	#clf = ExtraTreesClassifier(n_estimators=optionalEstimator, max_depth=max_depth_tree, min_samples_leaf=min_sample_leaf_tree) 
-	  	#clf = clf.fit(data, dataTarget)
-	    #model = SelectFromModel(clf, threshold="mean", prefit=True)
-	    #realData = model.transform(data)
-	    #return realData
 	
 	def dimensionReduction_fit(self, data):
 		self.pca = PCA(n_components=self.n_components)
@@ -71,8 +49,16 @@ class model (BaseEstimator):
     def __init__(self):
         self.num_train_samples=0
         self.is_trained=False
-        self.preprocess = preprocess(n_components=10)
-        self.mod = linear_model.Ridge()
+        self.preprocess = preprocess(n_components=9)
+        # 5 -> 0.5982865876
+        # 8 -> 0.8986549364
+        # 9 -> 0.9014957412
+        # 10 -> 0.9009779967
+        # 11 -> 0.8969211935
+        # 15 -> 0.8955047299
+        # 59 -> 0.8916412716
+        # plus on s'approche de 9, plus le score est bon
+        self.mod = tree.DecisionTreeRegressor()
     
     def fit(self, X, y):
 
